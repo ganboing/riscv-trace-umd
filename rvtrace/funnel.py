@@ -206,6 +206,8 @@ class TraceFunnelV0(Device):
             Timestamp.config(self, self.runtime['timestamp'])
 
     def start(self):
+        if 'timestamp' in self.runtime:
+            Timestamp.start(self)
         control = TfControlV0(value=self.control)
         control.tfEnable = 1
         control.tfSinkError = 1
@@ -218,6 +220,8 @@ class TraceFunnelV0(Device):
         self.control = control.value
         while TfControlV0(value=self.control).tfEmpty == 0:
             print(f'{self.name}: waiting for trace flush...')
+        if 'timestamp' in self.runtime:
+            Timestamp.stop(self)
 
     def dump(self, file, maxsize):
         control = TfControlV0(value=self.control)

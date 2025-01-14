@@ -210,6 +210,8 @@ class TraceEncoderV0(Device):
             Timestamp.config(self, self.runtime['timestamp'], msgen=True)
 
     def start(self):
+        if 'timestamp' in self.runtime:
+            Timestamp.start(self)
         control = TeControlV0(value=self.control)
         control.teEnable = 1
         control.teTracing = 1
@@ -223,6 +225,8 @@ class TraceEncoderV0(Device):
         self.control = control.value
         while TeControlV0(value=self.control).teEmpty == 0:
             print(f'{self.name}: waiting for trace flush...')
+        if 'timestamp' in self.runtime:
+            Timestamp.stop(self)
 
     def dump(self, *args, **kwargs):
         control = TeControlV0(value=self.control)

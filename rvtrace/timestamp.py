@@ -107,10 +107,21 @@ class Timestamp:
         itc = runtime.get('itc', False)
         ownership = runtime.get('ownership', False)
         device.tscontrol = TsControl(tsActive=1,
-                                     tsCount=1 if type in ['bus', 'core'] else 0,
                                      tsType=types_map[tstype],
                                      tsPrescale=prescale,
                                      tsEnable=1 if msgen else 0,
                                      tsBranch=branch,
                                      tsITC=1 if itc else 0,
                                      tsOwnership=1 if ownership else 0).value
+
+    @staticmethod
+    def start(device):
+        control = TsControl(value=device.tscontrol)
+        control.tsCount = 1
+        device.tscontrol = control.value
+
+    @staticmethod
+    def stop(device):
+        control = TsControl(value=device.tscontrol)
+        control.tsCount = 0
+        device.tscontrol = control.value
