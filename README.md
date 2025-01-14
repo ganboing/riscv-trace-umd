@@ -2,6 +2,12 @@
 
 This repo serves as a reference/test usermode driver for RISC-V trace components
 
+## Prerequisites
+
+* RISC-V SoC with Nexus tracing support.
+* Currently only support SiFive pre-ratified spec (0.x)
+* Kernel/DTB patch and rebuild may be required [Platform Hacks](#platform-hacks)
+
 ## Install
 
 Install the stable version:
@@ -103,5 +109,14 @@ sys-funnel TraceFunnelV0 @18000:
 	inputs=['hart0-encoder', 'hart1-encoder', 'hart2-encoder', 'hart3-encoder']
 	outputs=[]
 ```
+## Platform Hacks
+
+* SiFive P550/EIC7700X:
+  - Apply kernel patch to SiFive vendor tree until bugfix:
+    - [riscv: asm: fix EIC770X sys/mem port conversion](./patches/0001-riscv-asm-fix-EIC770X-sys-mem-port-conversion.patch)
+  - Apply device-tree patch to SiFive vendor tree to reserve trace buffer
+    - [riscv: dts: hifive-premier-p550: reserve 4g for trace buffer](./patches/0001-riscv-dts-hifive-premier-p550-reserve-4g-for-trace-b.patch)
+  - [Kernel source](https://github.com/sifive/riscv-linux/tree/dev/kernel/hifive-premier-p550)
+
 ## Additional Resources
 [Nexus Trace Specs](https://github.com/riscv-non-isa/tg-nexus-trace/blob/main/README.md)
