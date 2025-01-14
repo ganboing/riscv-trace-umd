@@ -2,7 +2,7 @@ from setuptools import setup, find_packages, Extension
 
 setup(
     name='rvtrace',
-    version='0.0.1',
+    version='0.1.20250114',
     description='User Mode driver for RISC-V Trace',
     url='https://github.com/ganboing/riscv-trace-umd',
     author='Bo Gan',
