@@ -65,6 +65,25 @@ $ rvtrace dump <trace.bin>
 Use the [modified NexRv with SrcBits=2 support](https://github.com/ganboing/tg-nexus-trace/tree/dev-p550/refcode/c)
 ```
 $ NexRv.exe -dump <trace.bin>
+...
+0x74 011101_00: TCODE[6]=29 (MSG #585) - IndirectBranchHistSync
+0x24 001001_00: SrcBits[2]=0x1 SYNC[4]=0x2
+0x41 010000_01: BTYPE[2]=0x0 ICNT[4]=0x4
+0x2C 001011_00:
+0xA0 101000_00:
+0x04 000001_00:
+0x00 000000_00:
+0x00 000000_00:
+0x05 000001_01: FADDR[36]=0x40001A0B
+0x0D 000011_01: HIST[6]=0x3
+0x3C 001111_00:
+0x74 011101_00:
+0xA0 101000_00:
+0xA0 101000_00:
+0xCC 110011_00:
+0xFC 111111_00:
+0x13 000100_11: TSTAMP[42]=0xF3A2874F
+...
 ```
 ### Debug
 ```
