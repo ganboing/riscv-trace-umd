@@ -4,13 +4,27 @@ This repo serves as a reference/test usermode driver for RISC-V trace components
 
 ## Install
 
+Install the stable version:
+
+```
+sudo pip install rvtrace
+```
+
 Install the developer version:
 
-```sudo pip install git+https://github.com/ganboing/riscv-trace-umd```
+```
+sudo pip install git+https://github.com/ganboing/riscv-trace-umd
+```
 
-For newer Debian/Ubuntu platforms, use
+For newer Debian/Ubuntu platforms, use `--break-system-packages`
 
-```sudo pip install --break-system-packages git+https://github.com/ganboing/riscv-trace-umd```
+```
+sudo pip install --break-system-packages rvtrace
+```
+or
+```
+sudo pip install --break-system-packages git+https://github.com/ganboing/riscv-trace-umd
+```
 
 ## Usage
 
