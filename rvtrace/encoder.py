@@ -233,5 +233,5 @@ class TraceEncoderV0(Device):
         if control.teEnable != 0:
             raise Exception(f"Encoder {self.name} must be stopped before dumping")
         if self.runtime.get('output', None) != 'funnel':
-            raise Exception("Only support funnel output of envoderv0")
+            raise Exception("Only support funnel output of encoderv0")
         raise Exception(f"You should dump through funnel of Encoder {self.name}")

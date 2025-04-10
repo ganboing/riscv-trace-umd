@@ -236,6 +236,11 @@ class TraceFunnelV0(Device):
         sinkbase = self.sinkbase
         sinklimit = self.sinklimit
         sinkwp = self.sinkwp
+        # tfSinkBytes:
+        #   0x0: 32-bit
+        #   0x1: 64-bit
+        #   0x2: 128-bit
+        #   0x3: 256-bit
         align = 2 ** (TfImplV0(value=self.impl).tfSinkBytes + 2)
         if sinkwp < sinkbase or sinkwp > sinklimit:
             raise Exception(f'sinkwp {sinkwp:0x} out of range [{sinkbase:0x},{sinklimit:0x}]')

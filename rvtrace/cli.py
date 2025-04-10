@@ -45,7 +45,7 @@ def cli_trace_stop(topo):
 
 def cli_trace_dump(topo, file, sink=None, maxsize=sys.maxsize):
     if file[0] == '-':
-        print(topo.dump(sys.stdout, sink=sink, maxsize=maxsize))
+        print(topo.dump(sys.stdout.buffer, sink=sink, maxsize=maxsize))
         return
     with open(file[0], 'wb') as fp:
         print(topo.dump(fp, sink=sink, maxsize=maxsize))
