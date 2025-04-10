@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name='rvtrace'
+dynamic = [ "version"]
+authors = [
+    { name="Bo Gan", email="ganboing@gmail.com"},
+]
+description = "User Mode driver for RISC-V Trace"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/ganboing/riscv-trace-umd"
+Issues = "https://github.com/ganboing/riscv-trace-umd/issues"
+
+[project.scripts]
+rvtrace = "rvtrace.cli:main"
+
+[tool.setuptools]
+ext-modules = [
+    {name="libmmio", sources=["lib/mmio.c"]}
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rvtrace*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"*" = ["*.cfg", "*.md",]
+
+[tool.setuptools_scm]
