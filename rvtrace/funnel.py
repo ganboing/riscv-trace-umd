@@ -18,8 +18,8 @@ TR_TF_SINK_BASE_HIGH = 0x14
 TR_TF_SINK_LIMIT = 0x18
 TR_TF_SINK_WP = 0x1c
 TR_TF_TS_CONTROL = 0x40
-TR_TF_TS_LOW = 0x44
-TR_TF_TS_UPPER = 0x48
+TR_TF_TS = 0x44
+TR_TF_TS_HIGH = 0x48
 
 class TfControlV0Bits(ctypes.LittleEndianStructure):
     _fields_ = [
@@ -85,12 +85,14 @@ class TraceFunnelV0(Device):
 
     @property
     def ts(self):
-        return (self.mmio.read32(TR_TF_TS_UPPER) << 32) + self.mmio.read32(TR_TF_TS_LOW)
+        return self.mmio.read32x2(TR_TF_TS)
 
     @ts.setter
     def ts(self, value):
-        self.mmio.write32(TR_TF_TS_LOW, value & 0xffffffff)
-        self.mmio.write32(TR_TF_TS_UPPER, value >> 32)
+        self.mmio.write32x2(TR_TF_TS, value)
+
+    def ts_diff(self, duration):
+        return self.mmio.read32x2_diff(TR_TF_TS, duration)
 
     @property
     def impl(self):

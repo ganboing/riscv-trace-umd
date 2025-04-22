@@ -46,15 +46,22 @@ def find_library(name):
         return lib
 
 libmmio = find_library('libmmio')
-for size in [8, 16, 32, 64]:
-    func = getattr(libmmio, f'mmio_read{size}')
-    globals()[f'libmmio_read{size}'] = func
-    func.restype = getattr(ctypes, f'c_uint{size}')
+for width, name in zip([8, 16, 32, 64, 64], ['8', '16', '32', '64', '32x2']):
+    # read functions
+    func = getattr(libmmio, f'mmio_read{name}')
+    globals()[f'libmmio_read{name}'] = func
+    func.restype = getattr(ctypes, f'c_uint{width}')
     func.argtypes = [ctypes.c_void_p]
-    func = getattr(libmmio, f'mmio_write{size}')
-    globals()[f'libmmio_write{size}'] = func
+    # diff functions
+    func = getattr(libmmio, f'mmio_read{name}_diff')
+    globals()[f'libmmio_read{name}_diff'] = func
+    func.restype = getattr(ctypes, f'c_uint{width}')
+    func.argtypes = [ctypes.c_void_p, getattr(ctypes, f'c_uint64')]
+    # write functions
+    func = getattr(libmmio, f'mmio_write{name}')
+    globals()[f'libmmio_write{name}'] = func
     func.restype = ctypes.c_void_p
-    func.argtypes = [ctypes.c_void_p, getattr(ctypes, f'c_uint{size}')]
+    func.argtypes = [ctypes.c_void_p, getattr(ctypes, f'c_uint{width}')]
 
 class mmap:
     """
@@ -78,51 +85,46 @@ class mmap:
             raise OSError
 
     def read8(self, pos):
-        return self.read(pos, 1)
+        return libmmio_read8(self.addr + pos)
+
+    def read8_diff(self, pos, duration):
+        return libmmio_read8_diff(self.addr + pos, duration)
 
     def read16(self, pos):
-        return self.read(pos, 2)
+        return libmmio_read16(self.addr + pos)
+
+    def read16_diff(self, pos, duration):
+        return libmmio_read16_diff(self.addr + pos, duration)
 
     def read32(self, pos):
-        return self.read(pos, 4)
+        return libmmio_read32(self.addr + pos)
+
+    def read32_diff(self, pos, duration):
+        return libmmio_read32_diff(self.addr + pos, duration)
 
     def read64(self, pos):
-        return self.read(pos, 8)
+        return libmmio_read64(self.addr + pos)
 
-    def read(self, start, nbytes):
-        assert nbytes in [1,2,4,8], "invalid length for read: %u" % nbytes
-        if nbytes == 1:
-            return libmmio_read8(self.addr + start)
-        elif nbytes == 2:
-            return libmmio_read16(self.addr + start)
-        elif nbytes == 4:
-            return libmmio_read32(self.addr + start)
-        elif nbytes == 8:
-            return libmmio_read64(self.addr + start)
-        else:
-            assert False
+    def read64_diff(self, pos, duration):
+        return libmmio_read64_diff(self.addr + pos, duration)
+
+    def read32x2(self, pos):
+        return libmmio_read32x2(self.addr + pos)
+
+    def read32x2_diff(self, pos, duration):
+        return libmmio_read32x2_diff(self.addr + pos, duration)
 
     def write8(self, pos, value):
-        return self.write(pos, 1, value)
+        return libmmio_write8(self.addr + pos, value)
 
     def write16(self, pos, value):
-        return self.write(pos, 2, value)
+        return libmmio_write16(self.addr + pos, value)
 
     def write32(self, pos, value):
-        return self.write(pos, 4, value)
+        return libmmio_write32(self.addr + pos, value)
 
     def write64(self, pos, value):
-        return self.write(pos, 8, value)
+        return libmmio_write64(self.addr + pos, value)
 
-    def write(self, start, nbytes, value):
-        assert nbytes in [1,2,4,8], "invalid length for write: %u" % nbytes
-        if nbytes == 1:
-            libmmio_write8(self.addr + start, value)
-        elif nbytes == 2:
-            libmmio_write16(self.addr + start, value)
-        elif nbytes == 4:
-            libmmio_write32(self.addr + start, value)
-        elif nbytes == 8:
-            libmmio_write64(self.addr + start, value)
-        else:
-            assert False
+    def write32x2(self, pos, value):
+        return libmmio_write32x2(self.addr + pos, value)

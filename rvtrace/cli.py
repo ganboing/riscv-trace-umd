@@ -37,6 +37,9 @@ def cli_trace_config(topo):
 def cli_trace_timestamp(topo):
     topo.timestamp()
 
+def cli_trace_tsdiff(topo, duration):
+    topo.tsdiff(duration)
+
 def cli_trace_start(topo):
     topo.start()
 
@@ -69,6 +72,11 @@ def main():
 
     sub_timestamp = subparsers.add_parser('timestamp', help='get timestamps of trace topology')
     sub_timestamp.set_defaults(func=cli_trace_timestamp)
+
+    sub_tsdiff = subparsers.add_parser('tsdiff', help='get timestamp difference over a given duration')
+    sub_tsdiff.add_argument('-d', dest='duration', type=int, default=1 * 1000 * 1000 * 1000,
+                            help='Duration in seconds')
+    sub_tsdiff.set_defaults(func=cli_trace_tsdiff)
 
     sub_start = subparsers.add_parser('start', help='start trace')
     sub_start.set_defaults(func=cli_trace_start)

@@ -11,8 +11,8 @@ from rvtrace.timestamp import Timestamp
 TR_TE_CONTROL = 0x0
 TR_TE_IMPL = 0x4
 TR_TE_TS_CONTROL = 0x40
-TR_TE_TS_LOW = 0x44
-TR_TE_TS_UPPER = 0x48
+TR_TE_TS = 0x44
+TR_TE_TS_HIGH = 0x48
 TR_TE_ITC_TRACE_EN = 0x60
 TR_TE_ITC_TRIG_EN = 0x64
 TR_TE_ITC_BLOCK = 0x80
@@ -90,12 +90,14 @@ class TraceEncoderV0(Device):
 
     @property
     def ts(self):
-        return (self.mmio.read32(TR_TE_TS_UPPER) << 32) + self.mmio.read32(TR_TE_TS_LOW)
+        return self.mmio.read32x2(TR_TE_TS)
 
     @ts.setter
     def ts(self, value):
-        self.mmio.write32(TR_TE_TS_LOW, value & 0xffffffff)
-        self.mmio.write32(TR_TE_TS_UPPER, value >> 32)
+        self.mmio.write32x2(TR_TE_TS, value)
+
+    def ts_diff(self, duration):
+        return self.mmio.read32x2_diff(TR_TE_TS, duration)
 
     @property
     def impl(self):

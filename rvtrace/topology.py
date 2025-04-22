@@ -143,6 +143,12 @@ class TraceTopology:
             print(f'{TraceTopology.devprefix(device)} TS={device.ts:016d}', file=file)
         TraceTopology.apply(self.encoders, _timestamp)
 
+    def tsdiff(self, duration, file=sys.stdout):
+        def _tsdiff(pad):
+            device = pad.device
+            print(f'{TraceTopology.devprefix(device)} TSDIFF={device.ts_diff(duration)}', file=file)
+        TraceTopology.apply(self.encoders, _tsdiff)
+
     def start(self):
         self.config()
         def _start(pad):
