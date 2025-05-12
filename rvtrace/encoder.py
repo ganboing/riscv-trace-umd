@@ -16,6 +16,7 @@ TR_TE_TS_HIGH = 0x48
 TR_TE_ITC_TRACE_EN = 0x60
 TR_TE_ITC_TRIG_EN = 0x64
 TR_TE_ITC_BLOCK = 0x80
+TR_TE_ITC_CHANNELS = 32
 
 class TeControlV0Bits(ctypes.LittleEndianStructure):
     _fields_ = [
@@ -103,6 +104,40 @@ class TraceEncoderV0(Device):
     def impl(self):
         return self.mmio.read32(TR_TE_IMPL)
 
+    @property
+    def srcid(self):
+        c = TeImplV0(value=self.impl)
+        return c.teSrcID
+
+    @property
+    def itcen(self):
+        return self.mmio.read32(TR_TE_ITC_TRACE_EN)
+
+    @itcen.setter
+    def itcen(self, value):
+        self.mmio.write32(TR_TE_ITC_TRACE_EN, value)
+
+    @property
+    def itctrigen(self):
+        return self.mmio.read32(TR_TE_ITC_TRIG_EN)
+
+    @itctrigen.setter
+    def itctrigen(self, value):
+        self.mmio.write32(TR_TE_ITC_TRIG_EN, value)
+
+    def itcread(self, channel):
+        return self.mmio.read32(TR_TE_ITC_BLOCK + channel * 4)
+
+    def itcsend(self, channel, data, width):
+        if width == 1:
+            self.mmio.write8(TR_TE_ITC_BLOCK + channel * 4 + 3, data)
+        elif width == 2:
+            self.mmio.write16(TR_TE_ITC_BLOCK + channel * 4 + 2, data)
+        elif width == 4:
+            self.mmio.write32(TR_TE_ITC_BLOCK + channel * 4, data)
+        else:
+            raise Exception(f'unsupported width {width}')
+
     @staticmethod
     def str_control(control):
         c = TeControlV0(value=control)
@@ -142,7 +177,9 @@ class TraceEncoderV0(Device):
     def info(self):
         return f'\timpl: {TraceEncoderV0.str_impl(self.impl)}\n' \
                f'\tcontrol: {TraceEncoderV0.str_control(self.control)}\n'\
-               f'\ttimestamp: {Timestamp.str_control(self.tscontrol)}'
+               f'\ttimestamp: {Timestamp.str_control(self.tscontrol)}\n'\
+               f'\titcen: 0x{self.itcen:0x}, itctrigen: {self.itctrigen}\n'\
+               f'\titc: {[self.itcread(channel) for channel in range(TR_TE_ITC_CHANNELS)]}'
 
     def reset(self):
         super().reset()
@@ -195,6 +232,8 @@ class TraceEncoderV0(Device):
         stoponwrap = self.runtime.get('stoponwrap', False)
         syncmaxbtm = self.runtime.get('syncmaxbtm', 15)
         syncmaxinst = self.runtime.get('syncmaxinst', 15)
+        itcen = self.runtime.get('itcen', 0)
+        itctrigen = self.runtime.get('itctrigen', 0)
         output = self.runtime.get('output', None)
         if output is not None and output not in SINK_TYPES_MAP:
             raise Exception(f'unknown output type {output}')
@@ -208,6 +247,8 @@ class TraceEncoderV0(Device):
                                    teSyncMaxBTM=syncmaxbtm,
                                    teSyncMaxInst=syncmaxinst,
                                    teSink=0 if output is None else SINK_TYPES_MAP[output]).value
+        self.itcen = itcen
+        self.itctrigen = itctrigen
         if 'timestamp' in self.runtime:
             Timestamp.config(self, self.runtime['timestamp'], msgen=True)
 

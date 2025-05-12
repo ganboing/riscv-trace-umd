@@ -46,6 +46,9 @@ def cli_trace_start(topo):
 def cli_trace_stop(topo):
     topo.stop()
 
+def cli_trace_itc(topo, channel, data, width, src=None):
+    topo.itcsend(channel, int(data, 0), width, src)
+
 def cli_trace_dump(topo, file, sink=None, maxsize=sys.maxsize):
     if file[0] == '-':
         topo.dump(sys.stdout.buffer, sink=sink, maxsize=maxsize)
@@ -84,6 +87,13 @@ def main():
     sub_stop = subparsers.add_parser('stop', help='stop trace')
     sub_stop.set_defaults(func=cli_trace_stop)
 
+    sub_itc = subparsers.add_parser('itcsend', help='write ITC stimulus')
+    sub_itc.add_argument('-s', '--src', dest='src', help='specify SRC encoder')
+    sub_itc.add_argument('-c', '--channel', dest='channel', type=int, required=True, help='channel [0,32)')
+    sub_itc.add_argument('-d', '--data', dest='data', required=True, help='data to send')
+    sub_itc.add_argument('-w', '--width', dest='width', type=int, default=4, help='data width 1/2/4')
+    sub_itc.set_defaults(func=cli_trace_itc)
+
     sub_dump = subparsers.add_parser('dump', help='dump trace buffer')
     sub_dump.add_argument('-s', '--sink', dest='sink', help='specify sink device')
     sub_dump.add_argument('-m', '--maxsize', dest='maxsize', type=int,
@@ -94,7 +104,8 @@ def main():
     options = parser.parse_args()
     func = vars(options).pop('func', None)
     if func is None:
-        raise Exception("subcommand not specified")
+        parser.print_help(sys.stderr)
+        return
 
     config = vars(options).pop('config', None)
     if config is None:

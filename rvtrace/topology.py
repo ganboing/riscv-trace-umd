@@ -114,6 +114,7 @@ class TraceTopology:
                 print(f'\tinputs={[input.device.name for input in pad.inputs]}', file=file)
             if hasattr(pad, 'outputs'):
                 print(f'\toutputs={[output.device.name for output in pad.outputs]}', file=file)
+            print('', file=file)
         TraceTopology.apply(self.encoders, _info)
 
     def reset(self):
@@ -148,6 +149,19 @@ class TraceTopology:
             device = pad.device
             print(f'{TraceTopology.devprefix(device)} TSDIFF={device.ts_diff(duration)}', file=file)
         TraceTopology.apply(self.encoders, _tsdiff)
+
+    def itcsend(self, channel, data, width, src=None):
+        def _itcsend(pad):
+            device = pad.device
+            if not hasattr(device, 'itcsend'):
+                return
+            if src is not None:
+                if not hasattr(device, 'srcid'):
+                    return
+                if device.srcid != src:
+                    return
+            device.itcsend(channel, data, width)
+        TraceTopology.apply(self.encoders, _itcsend)
 
     def start(self):
         self.config()
