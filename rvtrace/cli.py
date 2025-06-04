@@ -88,7 +88,7 @@ def main():
     sub_stop.set_defaults(func=cli_trace_stop)
 
     sub_itc = subparsers.add_parser('itcsend', help='write ITC stimulus')
-    sub_itc.add_argument('-s', '--src', dest='src', help='specify SRC encoder')
+    sub_itc.add_argument('-s', '--src', dest='src', type=int, help='specify SRC encoder')
     sub_itc.add_argument('-c', '--channel', dest='channel', type=int, required=True, help='channel [0,32)')
     sub_itc.add_argument('-d', '--data', dest='data', required=True, help='data to send')
     sub_itc.add_argument('-w', '--width', dest='width', type=int, default=4, help='data width 1/2/4')
