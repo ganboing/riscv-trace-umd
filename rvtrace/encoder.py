@@ -1,7 +1,7 @@
 """
 Copyright (C) 2025, Bo Gan <ganboing@gmail.com>
 
-SPDX-License-Identifer: Apache 2.0
+SPDX-License-Identifier: Apache 2.0
 """
 
 import ctypes
@@ -26,7 +26,7 @@ class TeControlV0Bits(ctypes.LittleEndianStructure):
         ("teEmpty",       ctypes.c_uint32, 1), # TE has flushed all traces
         ("teInstMode",    ctypes.c_uint32, 3), # Instruction tracing mode
         ("teITCMode",     ctypes.c_uint32, 2), # ITC trace generation parameters
-        ("resreved1",     ctypes.c_uint32, 3),
+        ("reserved1",     ctypes.c_uint32, 3),
         ("teStallOvf",    ctypes.c_uint32, 1), # Overflow/stall indicator (SW clearable)
         ("teStallEn",     ctypes.c_uint32, 1), # Force core stall by TE
         ("teStopOnWrap",  ctypes.c_uint32, 1), # Set teEnable=0 on wrap

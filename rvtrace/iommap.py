@@ -5,7 +5,7 @@ to support memory-mapped I/O.
 Copyright (C) ARM Ltd. 2019.  All rights reserved.
 Copyright (C) 2025, Bo Gan <ganboing@gmail.com>
 
-SPDX-License-Identifer: Apache 2.0
+SPDX-License-Identifier: Apache 2.0
 """
 
 import os
