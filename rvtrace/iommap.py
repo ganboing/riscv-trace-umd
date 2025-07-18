@@ -45,7 +45,7 @@ def find_library(name):
             continue
         return lib
 
-libmmio = find_library('libmmio')
+libmmio = find_library('librvtrace-mmio')
 for width, name in zip([8, 16, 32, 64, 64], ['8', '16', '32', '64', '32x2']):
     # read functions
     func = getattr(libmmio, f'mmio_read{name}')

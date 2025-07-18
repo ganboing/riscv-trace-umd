@@ -32,7 +32,7 @@ rvtrace = "rvtrace.cli:main"
 
 [tool.setuptools]
 ext-modules = [
-    {name="libmmio", sources=["lib/mmio.c"]}
+    {name="librvtrace-mmio", sources=["lib/mmio.c"]}
 ]
 
 [tool.setuptools.packages.find]
